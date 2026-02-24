@@ -7,6 +7,8 @@
     "ai-coding",
     "extension",
     "pi",
+    "pi-extension",
+    "pi-package",
     "transcript"
   ],
   "license": "MIT",
@@ -33,5 +35,10 @@
   },
   "peerDependencies": {
     "bun": ">=1.0.0"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
   }
 }
