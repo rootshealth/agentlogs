@@ -29,16 +29,16 @@
         ]
       },
       {
-        "group": "Server",
-        "pages": ["server/hosting"]
-      },
-      {
         "group": "Agents",
         "pages": ["agents/claude-code", "agents/codex", "agents/opencode", "agents/pi"]
       },
       {
         "group": "CLI",
         "pages": ["cli/installation", "cli/commands", "cli/configuration"]
+      },
+      {
+        "group": "Server",
+        "pages": ["server/hosting"]
       }
     ]
   },

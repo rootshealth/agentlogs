@@ -23,18 +23,19 @@ Both run the same server runtime and support embedded migrations.
 
 ## Optional Env Vars
 
-| Variable             | Default           | Notes                          |
-| -------------------- | ----------------- | ------------------------------ |
-| `DB_LOCAL_PATH`      | `.data/db.sqlite` | SQLite database file           |
-| `STORAGE_DIR`        | `.data/storage`   | Local blob storage directory   |
-| `OPENROUTER_API_KEY` | unset             | Enables AI-generated summaries |
-| `RESEND_API_KEY`     | unset             | Enables email features         |
-| `PORT`               | `3000`            | HTTP port                      |
-| `HOST`               | `0.0.0.0`         | HTTP bind host                 |
+| Variable             | Default                                         | Notes                                    |
+| -------------------- | ----------------------------------------------- | ---------------------------------------- |
+| `DB_LOCAL_PATH`      | `.data/db.sqlite`                               | SQLite database file                     |
+| `STORAGE_DIR`        | `.data/storage`                                 | Local blob storage directory             |
+| `OPENROUTER_API_KEY` | unset                                           | Enables AI-generated summaries           |
+| `RESEND_API_KEY`     | unset                                           | Enables email features                   |
+| `EMAIL_SENDER`       | `Philipp from AgentLogs <philipp@agentlogs.ai>` | Overrides the transactional email sender |
+| `PORT`               | `3000`                                          | HTTP port                                |
+| `HOST`               | `0.0.0.0`                                       | HTTP bind host                           |
 
 ## 1. Create A GitHub OAuth App
 
-Create an OAuth app at <https://github.com/settings/developers>:
+Create an OAuth app at [github.com/settings/developers](https://github.com/settings/developers):
 
 - **Homepage URL**: `${WEB_URL}`
 - **Authorization callback URL**: `${WEB_URL}/api/auth/callback/github`
