@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write
   packages: write
 
 concurrency:
@@ -63,6 +64,9 @@ jobs:
       - meta
       - build-image
     runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: https://agentlogs.ai
     env:
       DOKKU_APP: ${{ secrets.DOKKU_APP }}
       DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
