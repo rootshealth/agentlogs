@@ -150,7 +150,6 @@ jobs:
             exit 1
           fi
 
-          md5sum "${FILES[@]}" > checksums.md5
           sha256sum "${FILES[@]}" > checksums.sha256
 
       - name: Create GitHub Release
@@ -162,7 +161,6 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             release-assets/agentlogs-server-*
-            release-assets/checksums.md5
             release-assets/checksums.sha256
           body: |
             Published server artifacts for `${{ needs.meta.outputs.tag }}`.
@@ -172,5 +170,4 @@ jobs:
             - `${{ needs.meta.outputs.image }}:latest`
 
             Checksums:
-            - `checksums.md5` (legacy tooling compatibility)
             - `checksums.sha256` (recommended)
