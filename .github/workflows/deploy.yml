@@ -64,9 +64,10 @@ jobs:
       - build-image
     runs-on: ubuntu-latest
     env:
-      DOKKU_APP: ${{ vars.DOKKU_APP }}
-      DOKKU_HOST: ${{ vars.DOKKU_HOST }}
-      DOKKU_SSH_PORT: ${{ vars.DOKKU_SSH_PORT || '22' }}
+      DOKKU_APP: ${{ secrets.DOKKU_APP }}
+      DOKKU_HOST: ${{ secrets.DOKKU_HOST }}
+      DOKKU_SSH_PORT: ${{ secrets.DOKKU_SSH_PORT || '22' }}
+      DOKKU_SSH_USER: ${{ secrets.DOKKU_SSH_USER || 'dokku' }}
       IMAGE: ${{ needs.meta.outputs.image }}
       DIGEST: ${{ needs.build-image.outputs.digest }}
     steps:
@@ -84,9 +85,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [[ -z "${DOKKU_APP}" || -z "${DOKKU_HOST}" || -z "${DOKKU_SSH_USER}" ]]; then
+            echo "DOKKU_APP, DOKKU_HOST, and DOKKU_SSH_USER secrets must be set"
+            exit 1
+          fi
+
+          REMOTE_COMMAND="git:from-image --force ${DOKKU_APP} ${IMAGE}@${DIGEST}"
+          if [[ "${DOKKU_SSH_USER}" != "dokku" ]]; then
+            REMOTE_COMMAND="dokku ${REMOTE_COMMAND}"
+          fi
+
           ssh -i ~/.ssh/id_ed25519 \
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             -p "$DOKKU_SSH_PORT" \
-            "dokku@${DOKKU_HOST}" \
-            "git:from-image --force ${DOKKU_APP} ${IMAGE}@${DIGEST}"
+            "${DOKKU_SSH_USER}@${DOKKU_HOST}" \
+            "${REMOTE_COMMAND}"
