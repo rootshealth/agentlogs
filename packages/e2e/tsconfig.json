@@ -4,7 +4,9 @@
     "types": ["@types/bun", "@types/node"],
     "lib": ["ES2022", "DOM"],
     "paths": {
-      "@agentlogs/server/*": ["../server/src/*"]
+      "@agentlogs/server/*": ["../server/src/*"],
+      "drizzle-orm": ["../server/node_modules/drizzle-orm"],
+      "drizzle-orm/*": ["../server/node_modules/drizzle-orm/*"]
     }
   },
   "include": ["**/*.ts"]
