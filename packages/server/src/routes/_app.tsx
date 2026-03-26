@@ -163,7 +163,7 @@ function AppLayout() {
                   <ScrollTextIcon className="size-4" />
                   Changelog
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.open("https://discord.gg/yG4TNv3mjG", "_blank")}>
+                <DropdownMenuItem onClick={() => window.open("https://discord.gg/Dpft7gcVsA", "_blank")}>
                   <DiscordIcon className="size-4" />
                   Support
                 </DropdownMenuItem>

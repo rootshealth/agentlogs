@@ -305,7 +305,7 @@ function LandingPage() {
               <XIcon className="size-4" />
             </a>
             <a
-              href="https://discord.gg/yG4TNv3mjG"
+              href="https://discord.gg/Dpft7gcVsA"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord"

@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://agentlogs.ai">Website</a> ·
   <a href="https://agentlogs.ai/docs">Docs</a> ·
-  <a href="https://discord.gg/yG4TNv3mjG">Discord</a> ·
+  <a href="https://discord.gg/Dpft7gcVsA">Discord</a> ·
   <a href="https://agentlogs.ai/docs/changelog">Changelog</a>
 </p>
 
