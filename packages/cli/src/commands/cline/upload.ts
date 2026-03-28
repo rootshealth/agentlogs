@@ -227,7 +227,6 @@ export async function clineUploadCommand(taskIdOrPath?: string): Promise<void> {
     unifiedTranscript: result.transcript,
     sessionId: taskId,
     cwd,
-    rawTranscript: JSON.stringify(taskData.messages),
     blobs: uploadBlobs.length > 0 ? uploadBlobs : undefined,
   });
 

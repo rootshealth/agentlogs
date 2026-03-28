@@ -39,14 +39,13 @@ export const Route = createFileRoute("/api/ingest")({
           });
           return json({ error: "Unauthorized" }, { status: 401 });
         }
-        // Parse multipart form data (raw transcript upload)
+        // Parse multipart form data
         const formData = await request.formData();
         const clientId = formData.get("id");
         const sha256 = formData.get("sha256");
-        const transcriptPart = formData.get("transcript");
         const unifiedTranscriptField = formData.get("unifiedTranscript");
 
-        if (typeof sha256 !== "string" || !transcriptPart || typeof unifiedTranscriptField !== "string") {
+        if (typeof sha256 !== "string" || typeof unifiedTranscriptField !== "string") {
           logger.error("Ingest validation failed: missing required form fields", {
             userId,
             receivedKeys: Array.from(formData.keys()),
@@ -64,9 +63,6 @@ export const Route = createFileRoute("/api/ingest")({
           (visibilityOverride === "private" || visibilityOverride === "team" || visibilityOverride === "public")
             ? (visibilityOverride as VisibilityOption)
             : null;
-
-        const transcriptContent =
-          typeof transcriptPart === "string" ? transcriptPart : await (transcriptPart as File).text();
 
         // Validate hash against unified transcript (not raw) so conversion changes are detected
         const computedHash = await sha256Hex(unifiedTranscriptField);
@@ -156,8 +152,6 @@ export const Route = createFileRoute("/api/ingest")({
           }
         }
 
-        const rawRecords = parseJsonlRecords(transcriptContent);
-
         logger.debug("Ingest unified transcript payload", {
           userId,
           repoId,
@@ -166,15 +160,8 @@ export const Route = createFileRoute("/api/ingest")({
           unifiedTranscript,
         });
 
-        const eventCount = rawRecords.length;
         const repoName = repoId ? deriveRepoName(repoId) : null;
-
-        logger.debug("Ingest raw transcript parsed", {
-          userId,
-          repoId,
-          cwd,
-          sample: rawRecords.slice(0, 3),
-        });
+        const eventCount = unifiedTranscript.messageCount;
 
         logger.info("Ingest unified transcript generated", {
           userId,
@@ -468,33 +455,6 @@ export const Route = createFileRoute("/api/ingest")({
     },
   },
 });
-
-function parseJsonlRecords(content: string): Record<string, unknown>[] {
-  const records: Record<string, unknown>[] = [];
-
-  content.split("\n").forEach((rawLine, index) => {
-    const line = rawLine.trim();
-    if (!line) {
-      return;
-    }
-
-    try {
-      const value = JSON.parse(line) as unknown;
-      if (typeof value === "object" && value !== null) {
-        records.push(value as Record<string, unknown>);
-        return;
-      }
-      throw new Error("Parsed value is not an object");
-    } catch (error: unknown) {
-      logger.warn("Skipping invalid JSONL line", {
-        line: index + 1,
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
-  });
-
-  return records;
-}
 
 function deriveRepoName(repoId: string): string {
   try {

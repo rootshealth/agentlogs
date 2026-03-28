@@ -4,7 +4,7 @@ import { dirname, isAbsolute, resolve } from "path";
 import type { TranscriptSource, TranscriptVisibility, UploadBlob, UploadPayload } from "@agentlogs/shared";
 import { convertClaudeCodeTranscript, resolveGitContext, type UnifiedTranscript } from "@agentlogs/shared/claudecode";
 import { convertCodexTranscript } from "@agentlogs/shared/codex";
-import { redactSecretsDeep, redactSecretsPreserveLength } from "@agentlogs/shared/redact";
+import { redactSecretsDeep } from "@agentlogs/shared/redact";
 import { redactSensitiveFilesInTranscript } from "@agentlogs/shared/redact-sensitive-files";
 import { LiteLLMPricingFetcher } from "@agentlogs/shared/pricing";
 import { uploadTranscript } from "@agentlogs/shared/upload";
@@ -49,8 +49,6 @@ export interface UploadUnifiedParams {
   sessionId: string;
   /** Working directory for repo detection (allowlist check) */
   cwd: string;
-  /** Raw transcript content for archival (optional) */
-  rawTranscript?: string;
   /** Binary blobs (images, etc.) to upload with the transcript */
   blobs?: UploadBlob[];
   /** Visibility override - if not set, uses repo settings or server default */
@@ -117,13 +115,9 @@ export async function performUpload(
   // Determine visibility: explicit override > repo setting > server default
   const visibility = params.visibility ?? getRepoVisibility(repoId);
 
-  // Redact secrets from raw transcript
-  const redactedRawTranscript = redactSecretsPreserveLength(converted.rawTranscript);
-
   const payload: UploadPayload = {
     id: clientId,
     sha256,
-    rawTranscript: redactedRawTranscript,
     unifiedTranscript: redactedTranscript,
     blobs: converted.blobs.length > 0 ? converted.blobs : undefined,
     visibility,
@@ -243,7 +237,6 @@ export interface MultiEnvUploadResult {
 }
 
 interface ParsedTranscriptFile {
-  rawContent: string;
   records: Record<string, unknown>[];
   cwd: string;
   invalidLines: number;
@@ -294,7 +287,7 @@ function parseTranscriptFile(params: PerformUploadParams): ParsedTranscriptFile 
       ? params.cwdOverride.trim()
       : (extractCwdFromRecords(records) ?? process.cwd());
 
-  return { rawContent, records, cwd, invalidLines };
+  return { records, cwd, invalidLines };
 }
 
 /**
@@ -307,7 +300,6 @@ export async function convertTranscriptFile(
   preParsed?: ParsedTranscriptFile,
 ): Promise<{
   unifiedTranscript: UnifiedTranscript;
-  rawTranscript: string;
   blobs: UploadBlob[];
   sessionId: string;
   cwd: string;
@@ -359,7 +351,6 @@ export async function convertTranscriptFile(
 
   return {
     unifiedTranscript: transcript,
-    rawTranscript: parsed.rawContent,
     blobs: uploadBlobs,
     sessionId: finalSessionId,
     cwd: parsed.cwd,
@@ -397,7 +388,6 @@ export async function performUploadToAllEnvs(params: PerformUploadParams): Promi
     unifiedTranscript: converted.unifiedTranscript,
     sessionId: converted.sessionId,
     cwd: converted.cwd,
-    rawTranscript: converted.rawTranscript,
     blobs: converted.blobs,
     visibility: params.visibility,
   });
@@ -436,7 +426,7 @@ export async function performUploadToAllEnvs(params: PerformUploadParams): Promi
  * - Multi-environment upload
  */
 export async function uploadUnifiedToAllEnvs(params: UploadUnifiedParams): Promise<UploadUnifiedResult> {
-  const { unifiedTranscript, sessionId, cwd, rawTranscript, blobs, visibility: visibilityOverride } = params;
+  const { unifiedTranscript, sessionId, cwd, blobs, visibility: visibilityOverride } = params;
 
   // Check if repo is allowed for capture
   const repoId = await getRepoIdFromCwd(cwd);
@@ -472,13 +462,9 @@ export async function uploadUnifiedToAllEnvs(params: UploadUnifiedParams): Promi
   // Determine visibility: explicit override > repo setting > server default
   const visibility = visibilityOverride ?? getRepoVisibility(repoId);
 
-  // Redact secrets from raw transcript (use unified JSON if not provided)
-  const redactedRawTranscript = redactSecretsPreserveLength(rawTranscript ?? unifiedJson);
-
   const payload: UploadPayload = {
     id: clientId,
     sha256,
-    rawTranscript: redactedRawTranscript,
     unifiedTranscript: redactedTranscript,
     blobs: blobs && blobs.length > 0 ? blobs : undefined,
     visibility,

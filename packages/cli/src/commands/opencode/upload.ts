@@ -91,7 +91,6 @@ export async function opencodeUploadCommand(sessionId: string): Promise<void> {
     unifiedTranscript,
     sessionId,
     cwd,
-    rawTranscript: JSON.stringify(exportData),
   });
 
   // Exit if skipped due to allowlist

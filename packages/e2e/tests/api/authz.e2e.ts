@@ -56,7 +56,6 @@ test.describe("AuthZ enforcement", () => {
       multipart: {
         sha256,
         unifiedTranscript: unifiedJson,
-        transcript: JSON.stringify({ event: "test" }),
       },
     });
 

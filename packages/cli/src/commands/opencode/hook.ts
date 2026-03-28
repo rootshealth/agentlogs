@@ -379,7 +379,6 @@ async function doUpload(
       unifiedTranscript,
       sessionId,
       cwd: directory,
-      rawTranscript: JSON.stringify(exportData),
     });
 
     if (result.skipped) {

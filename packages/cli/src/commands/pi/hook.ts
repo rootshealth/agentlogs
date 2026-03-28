@@ -411,7 +411,6 @@ async function doUpload(
       unifiedTranscript: result.transcript,
       sessionId,
       cwd: directory,
-      rawTranscript: JSON.stringify(sessionData),
     });
 
     if (uploadResult.skipped) {

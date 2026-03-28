@@ -214,7 +214,6 @@ export async function piUploadCommand(sessionIdOrPath?: string): Promise<void> {
     unifiedTranscript: result.transcript,
     sessionId: sessionData.header.id,
     cwd,
-    rawTranscript: JSON.stringify(sessionData),
     blobs: uploadBlobs.length > 0 ? uploadBlobs : undefined,
   });
 

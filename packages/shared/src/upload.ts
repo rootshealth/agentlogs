@@ -71,7 +71,6 @@ export async function uploadTranscript(
   const blobsToUpload = await filterNewBlobs(payload.blobs, serverUrl, authToken);
 
   const formData = new FormData();
-  const filename = `${payload.unifiedTranscript.id || "transcript"}.jsonl`;
 
   // Include client-generated ID if provided
   if (payload.id) {
@@ -83,13 +82,6 @@ export async function uploadTranscript(
   if (payload.visibility) {
     formData.set("visibility", payload.visibility);
   }
-  formData.set(
-    "transcript",
-    new Blob([payload.rawTranscript], {
-      type: "application/jsonl",
-    }),
-    filename,
-  );
 
   // Add only new blobs as separate form fields with "blob:" prefix
   if (blobsToUpload) {

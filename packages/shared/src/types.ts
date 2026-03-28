@@ -20,7 +20,6 @@ export interface UploadPayload {
   /** Client-generated CUID2 ID for stable links */
   id?: string;
   sha256: string;
-  rawTranscript: string;
   unifiedTranscript: UnifiedTranscript;
   /** Blobs (images/screenshots) extracted from the transcript */
   blobs?: UploadBlob[];

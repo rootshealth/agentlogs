@@ -163,7 +163,6 @@ async function uploadOpenCodeTranscript(transcript: DiscoveredTranscript): Promi
     unifiedTranscript,
     sessionId: transcript.id,
     cwd,
-    rawTranscript: JSON.stringify(exportData),
   });
 
   if (result.skipped) {
@@ -255,7 +254,6 @@ async function uploadClineTranscript(transcript: DiscoveredTranscript): Promise<
     unifiedTranscript: result.transcript,
     sessionId: transcript.id,
     cwd,
-    rawTranscript: content,
   });
 
   if (uploadResult.skipped) {
@@ -327,7 +325,6 @@ async function uploadPiTranscript(transcript: DiscoveredTranscript): Promise<boo
     unifiedTranscript: result.transcript,
     sessionId: transcript.id,
     cwd,
-    rawTranscript: JSON.stringify(sessionData),
   });
 
   if (uploadResult.skipped) {

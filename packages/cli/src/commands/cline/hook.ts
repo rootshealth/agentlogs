@@ -248,7 +248,6 @@ async function handleTaskEnd(hookInput: ClineHookInput): Promise<void> {
     unifiedTranscript: result.transcript,
     sessionId: taskId,
     cwd,
-    rawTranscript: JSON.stringify(messages),
     blobs: uploadBlobs.length > 0 ? uploadBlobs : undefined,
   });
 
